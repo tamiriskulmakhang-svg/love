@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Привет Бубся ❤️</title>
+
+<style>
+
+body{
+
+background:black;
+
+color:#00ff99;
+
+font-family:Consolas;
+
+padding:40px;
+
+}
+
+.line{
+
+margin-bottom:20px;
+
+font-size:25px;
+
+}
+
+.cursor{
+
+animation:blink 1s infinite;
+
+}
+
+@keyframes blink{
+
+50%{
+
+opacity:0;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="text"></div>
+
+<script>
+
+const messages=[
+
+"Доброе утро солнце🥹",
+
+"Я сделала этот сайт сама🥰",
+
+"Знаю что ты соня но надеюсь что настроение у тебя хорошее😋",
+
+"Желаю хорошего учебного дня и удачи на стажировке.😘",
+
+"Ничего не забудь :ь",
+
+"Я верю в тебя и люблю тебя шмупся❤️"
+
+];
+
+let i=0;
+
+let j=0;
+
+const container=document.getElementById("text");
+
+let line;
+
+function newLine(){
+
+line=document.createElement("div");
+
+line.className="line";
+
+line.innerHTML="> <span></span><span class='cursor'>|</span>";
+
+container.appendChild(line);
+
+}
+
+function type(){
+
+if(j==0)newLine();
+
+const span=line.querySelector("span");
+
+if(j<messages[i].length){
+
+span.innerHTML+=messages[i][j];
+
+j++;
+
+setTimeout(type,45);
+
+}else{
+
+line.querySelector(".cursor").remove();
+
+i++;
+
+j=0;
+
+if(i<messages.length){
+
+setTimeout(type,900);
+
+}
+
+}
+
+}
+
+type();
+
+</script>
+
+</body>
+
+</html>
