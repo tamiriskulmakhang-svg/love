@@ -1,132 +1,206 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-
 <meta charset="UTF-8">
-
-<title>Привет Бубся ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Для Бубси ❤️</title>
 
 <style>
-
 body{
-
+margin:0;
 background:black;
+color:#00ff88;
+font-family:Consolas,monospace;
+overflow-x:hidden;
+}
 
-color:#00ff99;
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:0;
+}
 
-font-family:Consolas;
+.overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+z-index:1;
+}
 
+#app{
+position:relative;
+z-index:2;
+max-width:900px;
+margin:auto;
 padding:40px;
-
 }
 
 .line{
-
-margin-bottom:20px;
-
-font-size:25px;
-
+font-size:22px;
+margin:10px 0;
+text-shadow:0 0 10px #00ff88;
 }
 
 .cursor{
-
 animation:blink 1s infinite;
-
 }
 
 @keyframes blink{
+50%{opacity:0;}
+}
 
-50%{
+button{
+margin-top:30px;
+padding:12px 25px;
+border:1px solid #00ff88;
+background:transparent;
+color:#00ff88;
+cursor:pointer;
+display:none;
+}
 
+button:hover{
+background:#00ff88;
+color:black;
+}
+
+#gallery{
+display:none;
+padding:40px;
+}
+
+#gallery img{
+width:220px;
+margin:10px;
+border-radius:10px;
 opacity:0;
-
+transform:translateY(30px);
+transition:1s;
 }
 
+#gallery img.show{
+opacity:1;
+transform:translateY(0);
 }
-
 </style>
-
 </head>
 
 <body>
 
+<canvas id="matrix"></canvas>
+<div class="overlay"></div>
+
+<div id="app">
 <div id="text"></div>
+<button id="btn">Продолжить ❤️</button>
+
+<div id="gallery">
+<h2>Наши воспоминания ❤️</h2>
+
+<img src="photos/1.jpg">
+<img src="photos/2.jpg">
+<img src="photos/3.jpg">
+<img src="photos/4.jpg">
+<img src="photos/5.jpg">
+
+<br><br>
+
+<audio id="music" controls>
+<source src="music.mp3">
+</audio>
+</div>
+</div>
 
 <script>
 
+/* ТЕКСТ */
 const messages=[
-
 "Доброе утро солнце🥹",
-
 "Я сделала этот сайт сама🥰",
-
 "Знаю что ты соня но надеюсь что настроение у тебя хорошее😋",
-
-"Желаю хорошего учебного дня и удачи на стажировке.😘",
-
-"Ничего не забудь :ь",
-
-"Я верю в тебя и люблю тебя шмупся❤️"
-
+"Желаю хорошего дня ❤️",
+"Нажми кнопку ниже 👇"
 ];
 
-let i=0;
-
-let j=0;
-
-const container=document.getElementById("text");
-
-let line;
-
-function newLine(){
-
-line=document.createElement("div");
-
-line.className="line";
-
-line.innerHTML="> <span></span><span class='cursor'>|</span>";
-
-container.appendChild(line);
-
-}
+let i=0,j=0,line;
+const text=document.getElementById("text");
 
 function type(){
+if(j==0){
+line=document.createElement("div");
+line.className="line";
+line.innerHTML="> <span></span><span class='cursor'>|</span>";
+text.appendChild(line);
+}
 
-if(j==0)newLine();
-
-const span=line.querySelector("span");
+let span=line.querySelector("span");
 
 if(j<messages[i].length){
-
-span.innerHTML+=messages[i][j];
-
-j++;
-
-setTimeout(type,45);
-
+span.innerHTML+=messages[i][j++];
+setTimeout(type,40);
 }else{
-
 line.querySelector(".cursor").remove();
-
-i++;
-
-j=0;
-
-if(i<messages.length){
-
-setTimeout(type,900);
-
+i++;j=0;
+if(i<messages.length) setTimeout(type,700);
+else document.getElementById("btn").style.display="block";
 }
-
 }
-
-}
-
 type();
+
+/* КНОПКА */
+document.getElementById("btn").onclick=()=>{
+document.getElementById("gallery").style.display="block";
+document.getElementById("music").play().catch(()=>{});
+
+let imgs=document.querySelectorAll("#gallery img");
+imgs.forEach((img,i)=>{
+setTimeout(()=>img.classList.add("show"),i*200);
+});
+
+window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+};
+
+/* MATRIX */
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+const letters="01アイウエオABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const fontSize=16;
+const columns=canvas.width/fontSize;
+
+const drops=[];
+for(let x=0;x<columns;x++) drops[x]=1;
+
+function draw(){
+ctx.fillStyle="rgba(0,0,0,0.08)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="#00ff88";
+ctx.font=fontSize+"px monospace";
+
+for(let i=0;i<drops.length;i++){
+let text=letters[Math.floor(Math.random()*letters.length)];
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
+drops[i]=0;
+
+drops[i]++;
+}
+requestAnimationFrame(draw);
+}
+draw();
 
 </script>
 
 </body>
+</html>
 
 </html>
